@@ -1,13 +1,29 @@
 <template>
-  <div id="login" v-if="isSignedIn===false">
-    <form @submit.prevent id="loginForm">
-      Sign in to get acces to your account
+  <div v-if="isSignedIn===false && !signInAsStore">
+    <form @submit.prevent class="loginForm">
+      Sign in to get access to your account
+      <br>
+      <input type="text" class="loginField" placeholder="Login" v-model="login" @input="loginChangeHandler">
+      <br>
+      <input type="password" class="loginField" placeholder="Password" v-model="password" @input="passwordChangeHandler" autocomplete="off">
+      <br>
+      <button id="signInBtn" @click="signIn">Sign in</button>
+      <br>
+      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a store</button>
+    </form>
+    <RegistrationForm></RegistrationForm>
+  </div>
+  <div v-else-if="isSignedIn===false && signInAsStore">
+    <form @submit.prevent class="loginForm">
+      Sign in to get access to your store
       <br>
       <input type="text" class="loginField" placeholder="Address" v-model="address" @input="addressChangeHandler">
       <br>
       <input type="password" class="loginField" placeholder="Password" v-model="password" @input="passwordChangeHandler" autocomplete="off">
       <br>
-      <button id="signInBtn" @click="signIn">Sign in</button>
+      <button id="signInBtn" @click="signInAsStore">Sign in</button>
+      <br>
+      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a person</button>
     </form>
   </div>
   <div v-else>
@@ -17,26 +33,31 @@
 </template>
 <script>
 import ProfileView from '@/views/ProfileView.vue'
+import RegistrationForm from '@/views/RegistrationForm.vue'
 export default {
   name: 'HomePage',
   mounted() {
-     this.isSignedIn = JSON.parse(localStorage.getItem("signedIn"))
+    this.isSignedIn = JSON.parse(localStorage.getItem("signedIn"))
   },
   data () {
     return {
+      login: null,
       address: null,
       password: null,
-      name: null,
       status: null,
-      isSignedIn: false
+      isSignedIn: false,
+      signInAsStore: false
     }
   },
   methods: {
-    addressChangeHandler (event) {
+    loginChangeHandler (event) {
       this.address = event.target.value
     },
     passwordChangeHandler (event) {
       this.password = event.target.value
+    },
+   addressChangeHandler (event) {
+      this.address = event.target.value
     },
     parseUserData (_name,_status) {
       this.name = _name
@@ -51,7 +72,7 @@ export default {
       localStorage.setItem("signedIn",this.isSignedIn)
     }
   },
-  components: {ProfileView}
+  components: { ProfileView, RegistrationForm }
 }
 </script>
 <style>
@@ -59,7 +80,7 @@ export default {
   margin: 0;
   padding: 0;
 }
-#loginForm{
+.loginForm{
   font-size: 2rem;
   color:black;
 }
@@ -103,10 +124,21 @@ input::placeholder{
   font-size:1.3rem;
   width:120px;
   height:60px;
-  background-color: beige;
+  background-color: #CCCCFF;
 }
 #signOutBtn:hover{
-   background-color:blanchedalmond;
+   background-color:#9999FF;
    cursor: pointer;
+}
+.change-signIn-format{
+  position: flex;
+  font-size:1.5rem;
+  width:140px;
+  height:65px;
+  background-color: #CCCCFF;
+}
+.change-signIn-format:hover{
+  background-color:#9999FF;
+  cursor: pointer;
 }
 </style>
