@@ -34,14 +34,20 @@
 <script>
 import ProfileView from '@/views/ProfileView.vue'
 import RegistrationForm from '@/views/RegistrationForm.vue'
+import w3 from '@/web3Connect'
+import ContractPromise from '@/web3Contract' 
 export default {
   name: 'HomePage',
-  mounted() {
+  async mounted() {
+    this.web3 = w3()
+    this.contract = await ContractPromise
     this.isSignedIn = JSON.parse(localStorage.getItem("signedIn"))
   },
   data () {
     return {
       login: null,
+      web3: null,
+      contract: null,
       address: null,
       password: null,
       status: null,
