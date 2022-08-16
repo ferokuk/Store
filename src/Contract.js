@@ -1,5 +1,205 @@
 const ABI = [
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_newAdmin",
+				"type": "address"
+			}
+		],
+		"name": "addAdmin",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_adr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_pasw",
+				"type": "string"
+			}
+		],
+		"name": "addStore",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [],
+		"name": "AdminToBuyer",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_content",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "_to",
+				"type": "address"
+			}
+		],
+		"name": "answerOnComment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			}
+		],
+		"name": "approveChangeRole",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "buyAndProvideProduct",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_content",
+				"type": "string"
+			},
+			{
+				"internalType": "address",
+				"name": "_to",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_rating",
+				"type": "uint256"
+			}
+		],
+		"name": "buyerComment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_storeAdr",
+				"type": "address"
+			}
+		],
+		"name": "buyerDislikeComment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			},
+			{
+				"internalType": "address",
+				"name": "_storeAdr",
+				"type": "address"
+			}
+		],
+		"name": "buyerLikeComment",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_storeAdr",
+				"type": "address"
+			}
+		],
+		"name": "buyerToSeller",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address payable",
+				"name": "_storeAdr",
+				"type": "address"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_amount",
+				"type": "uint256"
+			}
+		],
+		"name": "buyProduct",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_storeAdr",
+				"type": "address"
+			}
+		],
+		"name": "deleteStore",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"stateMutability": "nonpayable",
 		"type": "constructor"
@@ -16,6 +216,67 @@ const ABI = [
 		],
 		"name": "CommentAccepted",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_name",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_from",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_until",
+				"type": "string"
+			},
+			{
+				"internalType": "int256",
+				"name": "_from_temp",
+				"type": "int256"
+			},
+			{
+				"internalType": "int256",
+				"name": "_to_temp",
+				"type": "int256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_basePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "_kg",
+				"type": "bool"
+			}
+		],
+		"name": "createProduct",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_adr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_pasw",
+				"type": "string"
+			}
+		],
+		"name": "login",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -109,6 +370,24 @@ const ABI = [
 		],
 		"name": "Login",
 		"type": "event"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "_storeAdr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_pasw",
+				"type": "string"
+			}
+		],
+		"name": "loginInStore",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	},
 	{
 		"anonymous": false,
@@ -450,6 +729,39 @@ const ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "string",
+				"name": "_login",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_pasw",
+				"type": "string"
+			},
+			{
+				"internalType": "address payable",
+				"name": "_adr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "_FIO",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "_city",
+				"type": "string"
+			}
+		],
+		"name": "registration",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -501,43 +813,7 @@ const ABI = [
 	},
 	{
 		"inputs": [],
-		"name": "AdminToBuyer",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_newAdmin",
-				"type": "address"
-			}
-		],
-		"name": "addAdmin",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address payable",
-				"name": "_adr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_pasw",
-				"type": "string"
-			}
-		],
-		"name": "addStore",
+		"name": "sellerToBuyer",
 		"outputs": [],
 		"stateMutability": "nonpayable",
 		"type": "function"
@@ -626,137 +902,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_content",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "_to",
-				"type": "address"
-			}
-		],
-		"name": "answerOnComment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			}
-		],
-		"name": "approveChangeRole",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "buyAndProvideProduct",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address payable",
-				"name": "_storeAdr",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_amount",
-				"type": "uint256"
-			}
-		],
-		"name": "buyProduct",
-		"outputs": [],
-		"stateMutability": "payable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_content",
-				"type": "string"
-			},
-			{
-				"internalType": "address",
-				"name": "_to",
-				"type": "address"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_rating",
-				"type": "uint256"
-			}
-		],
-		"name": "buyerComment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_storeAdr",
-				"type": "address"
-			}
-		],
-		"name": "buyerDislikeComment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "_index",
-				"type": "uint256"
-			},
-			{
-				"internalType": "address",
-				"name": "_storeAdr",
-				"type": "address"
-			}
-		],
-		"name": "buyerLikeComment",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "buyerPersonalData",
 		"outputs": [
@@ -814,19 +959,6 @@ const ABI = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_storeAdr",
-				"type": "address"
-			}
-		],
-		"name": "buyerToSeller",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -940,62 +1072,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_name",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_from",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_until",
-				"type": "string"
-			},
-			{
-				"internalType": "int256",
-				"name": "_from_temp",
-				"type": "int256"
-			},
-			{
-				"internalType": "int256",
-				"name": "_to_temp",
-				"type": "int256"
-			},
-			{
-				"internalType": "uint256",
-				"name": "_basePrice",
-				"type": "uint256"
-			},
-			{
-				"internalType": "bool",
-				"name": "_kg",
-				"type": "bool"
-			}
-		],
-		"name": "createProduct",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_storeAdr",
-				"type": "address"
-			}
-		],
-		"name": "deleteStore",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "getAllStores",
 		"outputs": [
@@ -1006,75 +1082,6 @@ const ABI = [
 			}
 		],
 		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_adr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_pasw",
-				"type": "string"
-			}
-		],
-		"name": "login",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "_storeAdr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_pasw",
-				"type": "string"
-			}
-		],
-		"name": "loginInStore",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "string",
-				"name": "_login",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_pasw",
-				"type": "string"
-			},
-			{
-				"internalType": "address payable",
-				"name": "_adr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "_FIO",
-				"type": "string"
-			},
-			{
-				"internalType": "string",
-				"name": "_city",
-				"type": "string"
-			}
-		],
-		"name": "registration",
-		"outputs": [],
-		"stateMutability": "nonpayable",
 		"type": "function"
 	},
 	{
@@ -1143,13 +1150,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [],
-		"name": "sellerToBuyer",
-		"outputs": [],
-		"stateMutability": "nonpayable",
-		"type": "function"
-	},
-	{
 		"inputs": [
 			{
 				"internalType": "address",
@@ -1212,6 +1212,6 @@ const ABI = [
 	}
 ]
 
-const address = '0xa353B26aa9291b8dA275B89A90fA8E20CD4e62c9'
+const address = '0xFE405646052b9C38B777a1A1743ED0b2771C9ff4'
 
 export {ABI,address}

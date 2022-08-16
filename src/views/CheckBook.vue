@@ -17,7 +17,7 @@
           {{index + 1}}.
           <div class="comment-container">
               <strong>{{comment.login}}</strong>: <br>
-              {{comment.content}} <br>
+              {{comment.content.length > 50? comment.content.slice(0,50)+"...":comment.content}} <br>
               {{comment.rating}}<span style="color:goldenrod">&#9733;</span>
               {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green"></i>   {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red"></i>
           </div>
