@@ -1,7 +1,7 @@
 <template>
-  <div v-if="isSignedIn===false && !signInAsStore">
+  <div v-if="isSignedIn===false">
     <form @submit.prevent class="loginForm">
-      Sign in to get access to your account
+      <strong>Sign in to get access to your {{signInAsStore?"store":"account"}}</strong>
       <br>
       <input type="text" class="loginField" placeholder="Address" v-model="address" @input="addressChangeHandler">
       <br>
@@ -9,26 +9,13 @@
       <br>
       <button id="signInBtn" @click="signIn">Sign in</button>
       <br>
-      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a store</button>
+      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a {{signInAsStore?"person":"store"}}</button>
     </form>
-    <RegistrationForm></RegistrationForm>
-  </div>
-  <div v-else-if="isSignedIn===false && signInAsStore">
-    <form @submit.prevent class="loginForm">
-      Sign in to get access to your store
-      <br>
-      <input type="text" class="loginField" placeholder="Address" v-model="address" @input="addressChangeHandler">
-      <br>
-      <input type="password" class="loginField" placeholder="Password" v-model="password" @input="passwordChangeHandler" autocomplete="off">
-      <br>
-      <button id="signInBtn" @click="signInAsStore">Sign in</button>
-      <br>
-      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a person</button>
-    </form>
+    <RegistrationForm v-if="!signInAsStore"></RegistrationForm>
   </div>
   <div v-else>
     <button @click="signOut" id="signOutBtn">Sign out</button>
-    <ProfileView :role="account.role"></ProfileView>
+    <ProfileView :account="account" :role="account.role"></ProfileView>
   </div>
 </template>
 <script>
@@ -41,7 +28,6 @@ export default {
   async mounted() {
     this.web3 = w3()
     this.contract = await ContractPromise
-    this.isSignedIn = JSON.parse(localStorage.getItem("signedIn"))
   },
   data () {
     return {
@@ -64,6 +50,10 @@ export default {
     async signIn() {
       if(this.address === null || this.password === null){
         alert("Please fill in all fields")
+        return
+      }
+      if(!this.web3.utils.isAddress(this.address)){
+        alert("Please check your address")
         return
       }
       await this.web3.eth.personal.unlockAccount(this.address,"")
@@ -101,11 +91,11 @@ export default {
         }
       }
       this.isSignedIn = true
-      localStorage.setItem("signedIn",this.isSignedIn)
     },
-    signOut() {
+    async signOut() {
       this.isSignedIn = false
-      localStorage.setItem("signedIn",this.isSignedIn)
+      this.account = null
+      await this.web3.eth.personal.lockAccount(this.address).then(alert("Goodbye!"))
     }
   },
   components: { ProfileView, RegistrationForm }
@@ -115,6 +105,9 @@ export default {
 *{
   margin: 0;
   padding: 0;
+}
+body{
+  background-color: honeydew;
 }
 .loginForm{
   font-size: 2rem;

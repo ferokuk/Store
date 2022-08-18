@@ -123,7 +123,7 @@ export default {
 }
 .form-content{
     margin: auto;
-    background: white;
+    background: honeydew;
     border-radius: 10px;
     min-height: 310px;
     min-width: 600px;
