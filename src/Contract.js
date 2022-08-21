@@ -84,6 +84,11 @@ const ABI = [
 				"internalType": "uint256",
 				"name": "_amount",
 				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_K",
+				"type": "uint256"
 			}
 		],
 		"name": "buyAndProvideProduct",
@@ -667,6 +672,13 @@ const ABI = [
 		"type": "event"
 	},
 	{
+		"inputs": [],
+		"name": "payDebts",
+		"outputs": [],
+		"stateMutability": "payable",
+		"type": "function"
+	},
+	{
 		"anonymous": false,
 		"inputs": [
 			{
@@ -819,6 +831,45 @@ const ABI = [
 		"type": "function"
 	},
 	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "addressToStore",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "name",
+				"type": "string"
+			},
+			{
+				"internalType": "enum WsrStoreFull.Roles",
+				"name": "role",
+				"type": "uint8"
+			},
+			{
+				"internalType": "address payable",
+				"name": "adr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "password",
+				"type": "string"
+			},
+			{
+				"internalType": "uint256",
+				"name": "rating",
+				"type": "uint256"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
 		"inputs": [],
 		"name": "adminPersonalData",
 		"outputs": [
@@ -872,25 +923,6 @@ const ABI = [
 			}
 		],
 		"name": "allSellers",
-		"outputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
-		"inputs": [
-			{
-				"internalType": "uint256",
-				"name": "",
-				"type": "uint256"
-			}
-		],
-		"name": "allStores",
 		"outputs": [
 			{
 				"internalType": "address",
@@ -971,6 +1003,11 @@ const ABI = [
 			{
 				"internalType": "uint256",
 				"name": "_amount",
+				"type": "uint256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "_K",
 				"type": "uint256"
 			}
 		],
@@ -1079,6 +1116,55 @@ const ABI = [
 				"internalType": "address[]",
 				"name": "stores",
 				"type": "address[]"
+			}
+		],
+		"stateMutability": "view",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "address",
+				"name": "",
+				"type": "address"
+			}
+		],
+		"name": "persons",
+		"outputs": [
+			{
+				"internalType": "string",
+				"name": "login",
+				"type": "string"
+			},
+			{
+				"internalType": "address payable",
+				"name": "adr",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "password",
+				"type": "string"
+			},
+			{
+				"internalType": "string",
+				"name": "FIO",
+				"type": "string"
+			},
+			{
+				"internalType": "enum WsrStoreFull.Roles",
+				"name": "role",
+				"type": "uint8"
+			},
+			{
+				"internalType": "address",
+				"name": "store",
+				"type": "address"
+			},
+			{
+				"internalType": "string",
+				"name": "city",
+				"type": "string"
 			}
 		],
 		"stateMutability": "view",
@@ -1212,6 +1298,6 @@ const ABI = [
 	}
 ]
 
-const address = '0x0B2954558EEb81778098821C2693DcCF83cDCDAD'
+const address = '0x89b07D8072F00d95bb0fB002A7614f7E8E7c5a95'
 
 export {ABI,address}
