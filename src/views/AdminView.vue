@@ -17,14 +17,14 @@
           <div> Store: {{request.store}}</div>
           <div> Old role: <span :style="{color:this.roles.get(request.oldRole) === 'Buyer'?'darkgreen':'blue'}">{{this.roles.get(request.oldRole)}}</span></div>
           <div> New role: <span :style="{color:this.roles.get(request.newRole) === 'Buyer'?'darkgreen':'blue'}">{{this.roles.get(request.newRole)}}</span></div>
-          <button @click="approveChangeRole(index)" style="font-size: 1.6rem; margin:10px">Approve</button>
+          <button @click="approveChangeRole(index)" :disabled="isProcessing" style="font-size: 1.6rem; margin:10px">Approve</button>
         </div>
       </div>
       <div>
         <button style="width: 200px; height: 100px; font-size: 2rem; margin: 10px; margin-left: 26px" @click="checkAllSellers">Check all sellers</button>
         <div >
           <div v-if="isCheckingSellers" class="popup">
-            <button @click="isCheckingSellers = !isCheckingSellers">Close</button>
+            <button @click="isCheckingSellers = !isCheckingSellers" >Close</button>
             <div v-for="(seller,index) in allSellers" :key="seller" class="popup-content" style="width: 700px;justify-content: center; align-items: center; ">
               <div style="font-weight:bold;">#{{index+1}}</div>
               <div>{{seller}}</div>
@@ -36,7 +36,7 @@
         <button @click="isAddingStore = !isAddingStore" style="margin: 20px; width: 200px; height: 100px; font-size: 2rem;">Add store</button>
         <div v-if="isAddingStore" class="popup" style="display: flex; justify-content: center; align-items: center">
           <div class="popup-content" style="width: 700px; justify-content: center; align-items: center;">
-            <button @click="isAddingStore = !isAddingStore">Close</button>
+            <button @click="isAddingStore = !isAddingStore" :disabled="isProcessing">Close</button>
             <br>
             <input type="text" placeholder="Name" v-model="storeName" @change="storeNameChangeHandler">
             <br>
@@ -44,15 +44,19 @@
             <br>
             <input type="password" placeholder="Password" v-model="storePassword" @change="storePasswordChangeHandler">
             <br>
-            <button @click="addStore">Add</button>
+            <button @click="addStore" :disabled="isProcessing">Add</button>
           </div>
         </div>
       <div style="display:inline">
         <button @click="getAllStores(true)" style="width:200px; height: 100px; font-size:2rem;" >Delete store</button>
         <div v-if="isDeletingStore" class="popup">
-          <button @click="isDeletingStore = !isDeletingStore">Close</button>
+          <button @click="isDeletingStore = !isDeletingStore" :disabled="isProcessing">Close</button>
           <div v-for="(store,index) in allStores" :key="store" class="popup-content" style="width: 900px;">
-            <strong>#{{index+1}}</strong> {{store}} <button style="width: 40px; height:40px; color: red;" @click="deleteStore(store)">&#10006;</button>
+            <div style="font-weight: bold"> #{{index+1}}</div> 
+            <div>
+            {{store}} 
+            <button style="width: 40px; height:40px; color: red;" :disabled="isProcessing" @click="deleteStore(store)">&#10006;</button>
+            </div>
           </div>
         </div>
       </div>
@@ -85,7 +89,8 @@ export default {
       isCheckingRoles: false,
       isAddingStore: false,
       isDeletingStore: false,
-      isCheckingSellers: false
+      isCheckingSellers: false,
+      isProcessing: false
     }
   },
   async mounted () {
@@ -137,6 +142,7 @@ export default {
       this.$router.go()
     },
     async approveChangeRole(index) {
+      this.isProcessing = true
       await this.contract.methods
       .approveChangeRole(index)
       .send({from: this.account.adr})
@@ -153,6 +159,7 @@ export default {
       .checkChangeRoles()
       .call()
       .then(value => this.requests = value)
+      this.isProcessing = false
     },
     async addNewAdmin() {
       if(this.address === null){
@@ -186,6 +193,7 @@ export default {
         swal("","Invalid address","error",{buttons:false,timer:1000})
         return
       }
+      this.isProcessing = true
       try{
       await this.contract.methods
       .addStore(this.storeAddress,this.storeName,this.storePassword)
@@ -196,8 +204,10 @@ export default {
       catch(error)
       {
         swal("","This store already exists","error",{buttons:false,timer:1000})
+        this.isProcessing = false
         return
       }
+      this.isProcessing = false
       this.isAddingStore = !this.isAddingStore
     },
     async deleteStore(store){
@@ -208,21 +218,23 @@ export default {
       }).then(value => answ = value)
 
       if(answ !== true) return
-
+      this.isProcessing = true
       try{
       await this.contract.methods
       .deleteStore(store)
       .send({from:this.account.adr})
       .then()
-      swal("","Successfully deleted!","success",{buttons: false, timer: 1000})
-      await this.getAllStores(false)
       }
       catch(error)
       {
         console.log(error)
         swal("","Something went wrong...","error",{buttons: false, timer: 1000})
+        this.isProcessing = false
         return
       }
+      swal("","Successfully deleted!","success",{buttons: false, timer: 1000})
+      await this.getAllStores(false)
+      this.isProcessing = false
     },
     async checkAllSellers(){
       await this.contract.methods

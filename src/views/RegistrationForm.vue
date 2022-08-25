@@ -1,5 +1,5 @@
 <template>
-  <button id="signUpBtn" @click="this.openForm = !this.openForm">Sign up</button>
+  <button id="signUpBtn" @click="this.openForm = !this.openForm" :disabled="isProcessing">Sign up</button>
   <transition name="modal">
     <div v-if="openForm" class="form">
       <div class="form-content">
@@ -40,6 +40,12 @@ export default {
       openForm: false,
       web3: null,
       contract: null
+    }
+  },
+  props:{
+    isProcessing:{
+      type: Boolean,
+      required: true
     }
   },
   async mounted(){
@@ -87,13 +93,12 @@ export default {
         return
       }
       await this.web3.eth.personal.unlockAccount(this.address,"")
-      let res = false
       try
       {
       await this.contract.methods
       .registration(this.login, this.password, this.address, this.fio, this.city)
       .send({from: this.address})
-      .then(value => res = value.events.Registration.returnValues.result)
+      .then()
       }
       catch(error)
       {
@@ -103,14 +108,14 @@ export default {
         })
         return
       }
-      if(res){
+      
       swal("","You succesfully signed up!","success",{
         buttons: false,
         timer: 1000
         })
         this.openForm = !this.openForm
         this.address = this.password = this.login = this.fio = this.city = null
-      }
+      
     },
     async generateNewAddress() {
       await this.web3.eth.personal

@@ -34,10 +34,16 @@ export default{
   async mounted () {
     this.contract = await ContractPromise
     this.web3 = w3()
-    this.contract.methods.getAllStores().call().then(value => this.allStores = value)
+    this.contract.methods
+    .getAllStores()
+    .call()
+    .then(value => this.allStores = value)
     this.address = localStorage.getItem('storeAdr')?localStorage.getItem('storeAdr'):null
     if(this.address !== null){
-      await this.contract.methods.checkStoreComments(this.address).call().then(value => this.comments = value)
+      await this.contract.methods
+      .checkStoreComments(this.address)
+      .call()
+      .then(value => this.comments = value)
     }
   },
   data () {
@@ -52,7 +58,9 @@ export default{
   methods:{
     async showReviews(event){
       this.address = event.target.value
-      await this.contract.methods.checkStoreComments(this.address).call().then(value => this.comments = value)
+      await this.contract.methods.checkStoreComments(this.address)
+      .call()
+      .then(value => this.comments = value)
       localStorage.setItem('storeAdr',this.address)
     }
   }

@@ -7,11 +7,11 @@
       <br>
       <input type="password" class="loginField" placeholder="Password" v-model="password" @input="passwordChangeHandler" autocomplete="off">
       <br>
-      <button id="signInBtn" @click="signIn">Sign in</button>
+      <button id="signInBtn" @click="signIn" :disabled="isProcessing">Sign in</button>
       <br>
-      <button @click="signInAsStore = !signInAsStore" class="change-signIn-format">Sign in as a {{signInAsStore?"person":"store"}}</button>
+      <button @click="signInAsStore = !signInAsStore" :disabled="isProcessing" class="change-signIn-format">Sign in as a {{signInAsStore?"person":"store"}}</button>
     </form>
-    <RegistrationForm v-if="!signInAsStore"></RegistrationForm>
+    <RegistrationForm v-if="!signInAsStore" :isProcessing="isProcessing"></RegistrationForm>
   </div>
   <div v-else>
     <button @click="signOut" id="signOutBtn">Sign out</button>
@@ -23,7 +23,7 @@ import ProfileView from '@/views/ProfileView.vue'
 import RegistrationForm from '@/views/RegistrationForm.vue'
 import w3 from '@/web3Connect'
 import ContractPromise from '@/web3Contract' 
-import swal from 'sweetalert';
+import swal from 'sweetalert'
 export default {
   name: 'HomePage',
   async mounted() {
@@ -38,7 +38,8 @@ export default {
       account: null,
       password: null,
       isSignedIn: false,
-      signInAsStore: false
+      signInAsStore: false,
+      isProcessing: false
     }
   },
   methods: {
@@ -57,17 +58,8 @@ export default {
         swal("","Please check your address", "error")
         return
       }
+      this.isProcessing = true
       await this.web3.eth.personal.unlockAccount(this.address,"")
-      let accs = await this.web3.eth.getAccounts()
-      await this.web3.eth.personal.unlockAccount(accs[0],"")
-      await this.web3.eth
-      .sendTransaction(
-        {from:accs[0], 
-        to: this.address, 
-        value: this.web3.utils.toWei('0.00001', 'ether')})
-      .then()
-      await this.web3.eth.personal.lockAccount(accs[0])
-
       if(!this.signInAsStore)
       {
         try
@@ -80,9 +72,10 @@ export default {
         catch(error)
         {
           swal("Please, check your address and password!")
+          console.log(error)
+          this.isProcessing = false
           return
         }
-        swal(`Welcome, ${this.account.login}!`)
       }
       else
       {
@@ -96,19 +89,19 @@ export default {
         catch(error)
         {
           swal("","Please, check your address and password!","error")
+          console.log(error)
+          this.isProcessing = false
           return
         }
       }
-      swal(`Welcome back, ${this.account.login}`, {
-        buttons: false,
-        timer: 1200,
-      });
+      swal(`Welcome back, ${this.account.login?this.account.login:this.account.name}`, {buttons: false,timer: 1200})
+      this.isProcessing = false
       this.isSignedIn = true
     },
     async signOut() {
       this.isSignedIn = false
       this.account = null
-      await this.web3.eth.personal.lockAccount(this.address).then(swal("Goodbye!", {buttons: false,timer: 800,}))
+      await this.web3.eth.personal.lockAccount(this.address).then(swal("Goodbye!", {buttons: false,timer: 800}))
     }
   },
   components: { ProfileView, RegistrationForm }
