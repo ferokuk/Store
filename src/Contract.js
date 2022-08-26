@@ -124,11 +124,6 @@ const ABI = [
 						"type": "string"
 					},
 					{
-						"internalType": "enum WsrStoreFull.Roles",
-						"name": "role",
-						"type": "uint8"
-					},
-					{
 						"internalType": "address payable",
 						"name": "adr",
 						"type": "address"
@@ -142,6 +137,11 @@ const ABI = [
 						"internalType": "uint256",
 						"name": "rating",
 						"type": "uint256"
+					},
+					{
+						"internalType": "enum WsrStoreFull.Roles",
+						"name": "role",
+						"type": "uint8"
 					},
 					{
 						"components": [
@@ -422,6 +422,12 @@ const ABI = [
 				"internalType": "bool",
 				"name": "provided",
 				"type": "bool"
+			},
+			{
+				"indexed": false,
+				"internalType": "uint256",
+				"name": "price",
+				"type": "uint256"
 			}
 		],
 		"name": "ProductProvided",
@@ -486,11 +492,6 @@ const ABI = [
 				"type": "string"
 			},
 			{
-				"internalType": "enum WsrStoreFull.Roles",
-				"name": "role",
-				"type": "uint8"
-			},
-			{
 				"internalType": "address payable",
 				"name": "adr",
 				"type": "address"
@@ -504,6 +505,11 @@ const ABI = [
 				"internalType": "uint256",
 				"name": "rating",
 				"type": "uint256"
+			},
+			{
+				"internalType": "enum WsrStoreFull.Roles",
+				"name": "role",
+				"type": "uint8"
 			}
 		],
 		"stateMutability": "view",
@@ -1093,42 +1099,47 @@ const ABI = [
 	{
 		"inputs": [
 			{
-				"internalType": "address",
+				"internalType": "string",
 				"name": "",
-				"type": "address"
+				"type": "string"
 			}
 		],
-		"name": "persons",
+		"name": "products",
 		"outputs": [
 			{
 				"internalType": "string",
-				"name": "login",
-				"type": "string"
-			},
-			{
-				"internalType": "address payable",
-				"name": "adr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "password",
+				"name": "name",
 				"type": "string"
 			},
 			{
 				"internalType": "string",
-				"name": "FIO",
+				"name": "expirationDate",
 				"type": "string"
 			},
 			{
-				"internalType": "enum WsrStoreFull.Roles",
-				"name": "role",
-				"type": "uint8"
+				"internalType": "int256",
+				"name": "from_temperature",
+				"type": "int256"
 			},
 			{
-				"internalType": "address",
-				"name": "store",
-				"type": "address"
+				"internalType": "int256",
+				"name": "to_temperature",
+				"type": "int256"
+			},
+			{
+				"internalType": "uint256",
+				"name": "basePrice",
+				"type": "uint256"
+			},
+			{
+				"internalType": "bool",
+				"name": "kg",
+				"type": "bool"
+			},
+			{
+				"internalType": "uint256",
+				"name": "amount",
+				"type": "uint256"
 			}
 		],
 		"stateMutability": "view",
@@ -1284,9 +1295,22 @@ const ABI = [
 		],
 		"stateMutability": "view",
 		"type": "function"
+	},
+	{
+		"inputs": [
+			{
+				"internalType": "uint256",
+				"name": "_rating",
+				"type": "uint256"
+			}
+		],
+		"name": "updateStoreRating",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
 	}
 ]
 
-const address = '0x8fee933F97Be0a3de8008626B70e6ecf65FBb00b'
+const address = '0x1883E103e049dc59b1590d7a01acd79f0B58b23F'
 
 export {ABI,address}
