@@ -1,7 +1,7 @@
 <template>
     <div class="profile-content">
         <div > 
-          Hello, <span v-if="account.role === '1' || account.role === '2'" style="font-weight: bold;">{{account.FIO}}</span> 
+          Hello, <span v-if="account.role === '1' || account.role === '2' || account.role === '3'" style="font-weight: bold;">{{account[3]}}</span> 
           <span v-else style="font-weight: bold;"> {{account.login?account.login:account.name}}</span>
         </div>
         Your role is: 

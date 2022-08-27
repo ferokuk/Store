@@ -60,32 +60,33 @@ export default {
     moneyChangeHandler(event){
       this.money = event.target.value
     },
-   nameChangeHandler(event){
-    this.name = event.target.value
-   },
-   amountChangeHandler(event){
-    this.amount = event.target.value
-   },
-   async updateStoreRating(){
-    let rating = 0
-    let length = this.account.comments.length
-    for(let i = 0; i < length; i++)
-    {
-      rating += ((i + 1) * this.account.comments[i][5])/(this.account.comments[i][5] + this.account.comments[i][6])
-    }
-    rating *= 1000
-    rating = Math.floor(rating/length)
-    this.rating = rating
-    await this.contract.methods
-    .updateStoreRating(rating)
-    .send({from: this.account.adr})
-    .then()
-   },
-   async getBalance(){
+    nameChangeHandler(event){
+      this.name = event.target.value
+    },
+    amountChangeHandler(event){
+      this.amount = event.target.value
+    },
+    async updateStoreRating(){
+      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
+      let rating = 0
+      let length = this.account.comments.length
+      for(let i = 0; i < length; i++)
+      {
+        rating += ((i + 1) * this.account.comments[i][5])/(this.account.comments[i][5] + this.account.comments[i][6])
+      }
+      rating *= 1000
+      rating = Math.floor(rating/length)
+      this.rating = rating
+      await this.contract.methods
+      .updateStoreRating(rating)
+      .send({from: this.account.adr})
+      .then()
+    },
+    async getBalance(){
     await this.web3.eth
     .getBalance(this.account.adr)
     .then(value => this.balance = value)
-   },
+    },
     checkDebts(){
       this.contract.methods
       .debts(this.account.adr)
@@ -93,6 +94,7 @@ export default {
       .then(value => this.debt = value)
     },
     async payDebts(){
+      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
       if(this.money > this.debt) this.money-= this.money - this.debt
       this.getBalance()
       if(this.money > this.balance){

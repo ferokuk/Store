@@ -1,5 +1,19 @@
 <template>
     <div>Your balance: {{balance}} ether</div>
+    <div><button @click="isChangingRole = true" class="change-view" style="width: 200px">Send request to become seller</button></div>
+    <div v-if="isChangingRole" class="modal">
+      <div class="modal-content">
+        <button @click="isChangingRole = false" class="choose-store-btn">Close</button>
+        <br>
+        Choose a store where u wish to work:
+        <br>
+        <select v-model="store" class="stores">
+          <option v-for="store in allStores" :key="store">{{store}}</option>
+        </select>
+        <br>
+        <button @click="becomeSeller(store)" :disabled="!store" class="choose-store-btn" style="font-size: 1.6rem">Send request</button>
+      </div>
+    </div>
     <button @click="changeView" class="change-view">{{isBuying?'See store comments':'Buy products'}}</button> <br>
     <div>
       <select v-model="address" @change="addressChangeHandler" class="stores">
@@ -92,20 +106,19 @@ export default {
       address: null,
       amount: null,
       balance: null,
-      isBuying: false,
       commentRating: null,
+      store: null,
       commentContent: '',
+      isBuying: false,
       isProcessing: false,
-      isCommenting: false
+      isCommenting: false,
+      isChangingRole: false
     }
   },
   async mounted() {
     this.contract = await ContractPromise
     this.web3 = w3()
-    await this.contract.methods
-    .getAllStores()
-    .call()
-    .then(value => this.allStores = value)
+    await this.getAllStores()
     await this.web3.eth
     .getBalance(this.account.adr)
     .then(value => this.balance = this.web3.utils.fromWei(value))
@@ -137,6 +150,9 @@ export default {
   contentChangeHandler(event){
     this.commentContent = event.target.value
   },
+  changeStore(store){
+    this.store = store
+  },
   getComments(){
     this.contract.methods
     .checkStoreComments(this.address)
@@ -147,6 +163,12 @@ export default {
     .checkStoreAnswers(this.address)
     .call()
     .then(value => this.answers = value)
+  },
+  async getAllStores(){
+    await this.contract.methods
+    .getAllStores()
+    .call()
+    .then(value => this.allStores = value)
   },
   async changeView() {
     this.isBuying = !this.isBuying
@@ -238,6 +260,26 @@ export default {
     this.isCommenting = false
     this.commentContent = ""
     this.commentRating = null
+  },
+  async becomeSeller(){
+    await this.getAllStores()
+    let answ
+    await swal("","Are you sure?","warning",{buttons:[true,"Yes"]}).then(value => answ = value)
+    if(answ !== true) return
+    try
+    {
+    await this.contract.methods
+    .buyerToSeller(this.address)
+    .send({from: this.account.adr})
+    .then()
+    swal("","Request sent!\nIt may take some time to be accepted.","success",{buttons:false,timer:2000})
+    }
+    catch(error)
+    {
+      swal("","You already requested!","warning",{buttons:false,timer:1200})
+      return
+    }
+
   }
   },
   props: {
@@ -288,5 +330,36 @@ textarea{
   resize: none;
   background: #CCCCFF;
   
+}
+.modal{
+  top:0;
+  bottom:0;
+  right:0;
+  left:0;
+  display:flex;
+  justify-content: center;
+  align-items: center;
+  background: rgba(0,0,0,0.5);
+  position: fixed;
+  margin: auto;
+}
+.modal-content{
+  margin: auto;
+  background: honeydew;
+  border-radius: 10px;
+  min-height: 310px;
+  min-width: 600px;
+  padding: 25px;
+}
+.choose-store-btn{
+  width: 140px;
+  height: 70px;
+  background-color: #CCCCFF;
+  font-size: 2rem;
+  margin: 10px;
+}
+.choose-store-btn:hover{
+  cursor: pointer;
+  background-color: #9999FF;
 }
 </style>

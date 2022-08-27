@@ -4,7 +4,7 @@
         <button style="font-size: 1.6rem; width:200px; height:100px; font-weight: bold; margin-left: 17px; margin-bottom: 10px;" @click="becomeBuyer">Become buyer</button>
       </div>
       <div>
-        <button @click="checkChangeRoleRequst" style="font-size: 1.3rem; width:200px; height:100px; font-weight: bold; margin-left: 17px">Check and approve role change requests</button>
+        <button @click="isCheckingRoles = !isCheckingRoles" style="font-size: 1.3rem; width:200px; height:100px; font-weight: bold; margin-left: 17px">Check and approve role change requests</button>
       </div>
       <div v-if="isCheckingRoles" class="popup" style="display:flex;justify-content:center;align-items:center">
       <button @click="isCheckingRoles = !isCheckingRoles" style="font-size:2rem; position: fixed; top:250px; left:540px">Close</button>
@@ -17,7 +17,8 @@
           <div> Store: {{request.store}}</div>
           <div> Old role: <span :style="{color:this.roles.get(request.oldRole) === 'Buyer'?'darkgreen':'blue'}">{{this.roles.get(request.oldRole)}}</span></div>
           <div> New role: <span :style="{color:this.roles.get(request.newRole) === 'Buyer'?'darkgreen':'blue'}">{{this.roles.get(request.newRole)}}</span></div>
-          <button @click="approveChangeRole(index)" :disabled="isProcessing" style="font-size: 1.6rem; margin:10px">Approve</button>
+          <button @click="approveChangeRole(index)" :disabled="isProcessing" class="role-change-btn" style="background-color: green">&#10003;</button>
+          <button @click="refuseChangeRole(index)" :disabled="isProcessing" class="role-change-btn"  style="background-color: red">&#10006;</button>
         </div>
       </div>
       <div>
@@ -44,11 +45,11 @@
             <br>
             <input type="password" placeholder="Password" v-model="storePassword" @change="storePasswordChangeHandler">
             <br>
-            <button @click="addStore" :disabled="isProcessing">Add</button>
+            <button @click="addStore" :disabled="isProcessing || !storeName || !storeAddress || !storePassword">Add</button>
           </div>
         </div>
       <div style="display:inline">
-        <button @click="getAllStores(true)" style="width:200px; height: 100px; font-size:2rem;" >Delete store</button>
+        <button @click="isDeletingStore = !isDeletingStore" style="width:200px; height: 100px; font-size:2rem;" >Delete store</button>
         <div v-if="isDeletingStore" class="popup">
           <button @click="isDeletingStore = !isDeletingStore" :disabled="isProcessing">Close</button>
           <div v-for="(store,index) in allStores" :key="store" class="popup-content" style="width: 900px;">
@@ -65,7 +66,7 @@
     <div>
       <div style="margin-top:30px; font-weight: bold">Add new admin</div>
       <input type="text" placeholder="Address" v-model="address" @change="addressChangeHandler"><br>
-      <button style="font-weight: bold" @click="addNewAdmin">Add</button>
+      <button style="font-weight: bold" @click="addNewAdmin" :disabled="!address">Add</button>
     </div>
 </template>
 
@@ -101,6 +102,8 @@ export default {
     this.roles.set('2','Seller')
     this.roles.set('3','Provider')
     this.roles.set('4','Store')
+    await this.checkChangeRoles()
+    await this.getAllStores()
   },
   props:{
     account: {
@@ -121,13 +124,6 @@ export default {
     storePasswordChangeHandler(event){
       this.storePassword = event.target.value
     },
-    async checkChangeRoleRequst () {
-      await this.contract.methods
-      .checkChangeRoles()
-      .call()
-      .then(value => this.requests = value)
-      this.isCheckingRoles = !this.isCheckingRoles
-    },
     async becomeBuyer() {
       let answ
       await swal("","Are you sure? \n You will need to sign in again","info", {
@@ -136,13 +132,17 @@ export default {
       }).then(value => answ = value)
 
       if(answ !== true) return
-
-      await this.contract.methods.AdminToBuyer().send({from: this.account.adr}).then()
+      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
+      await this.contract.methods
+      .AdminToBuyer()
+      .send({from: this.account.adr})
+      .then()
       swal("","Your role now is buyer","success",{buttons: false,timer:1000})
       this.$router.go()
     },
     async approveChangeRole(index) {
       this.isProcessing = true
+      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
       await this.contract.methods
       .approveChangeRole(index)
       .send({from: this.account.adr})
@@ -155,22 +155,33 @@ export default {
           buttons: false,
           timer: 1000,
         }))
+      await this.checkChangeRoles()
+      this.isProcessing = false
+    },
+    async refuseChangeRole(index){
+      this.isProcessing = true
+      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
+      await this.contract.methods
+      .approveChangeRole(index)
+      .send({from: this.account.adr})
+      .then()
+      swal("","Successfully refused","success", {buttons: false,timer: 1000})
+      await this.checkChangeRoles()
+      this.isProcessing = false
+    },
+    async checkChangeRoles(){
       await this.contract.methods
       .checkChangeRoles()
       .call()
       .then(value => this.requests = value)
-      this.isProcessing = false
     },
     async addNewAdmin() {
-      if(this.address === null){
-        swal("","You need an address of person to add him as admin","warning",{buttons: false,timer:1500})
-        return
-      }
       if(!this.web3.utils.isAddress(this.address) || this.address === this.account.adr){
         swal("","Invalid address","warning",{buttons: false,timer:1200})
         return
       }
-      try{
+      try
+      {
       await this.contract.methods
       .addAdmin(this.address)
       .send({from: this.account.adr})
@@ -185,16 +196,13 @@ export default {
       this.address = null
     },
     async addStore(){
-      if(this.storeAddress === null || this.storeName === null || this.storePassword === null){
-        swal("","Please fill in all fields","warning",{buttons:false,timer:1000})
-        return
-        }
       if(!this.web3.utils.isAddress(this.storeAddress)){
         swal("","Invalid address","error",{buttons:false,timer:1000})
         return
       }
       this.isProcessing = true
-      try{
+      try
+      {
       await this.contract.methods
       .addStore(this.storeAddress,this.storeName,this.storePassword)
       .send({from:this.account.adr})
@@ -209,6 +217,7 @@ export default {
       }
       this.isProcessing = false
       this.isAddingStore = !this.isAddingStore
+      await this.getAllStores()
     },
     async deleteStore(store){
       let answ
@@ -224,17 +233,16 @@ export default {
       .deleteStore(store)
       .send({from:this.account.adr})
       .then()
+      swal("","Successfully deleted!","success",{buttons: false, timer: 1000})
+      await this.getAllStores()
+      this.isProcessing = false
       }
       catch(error)
       {
-        console.log(error)
         swal("","Something went wrong...","error",{buttons: false, timer: 1000})
         this.isProcessing = false
         return
       }
-      swal("","Successfully deleted!","success",{buttons: false, timer: 1000})
-      await this.getAllStores(false)
-      this.isProcessing = false
     },
     async checkAllSellers(){
       await this.contract.methods
@@ -243,13 +251,11 @@ export default {
       .then(value => this.allSellers = value.allsellers)
       this.isCheckingSellers = !this.isCheckingSellers
     },
-    async getAllStores(popup){
+    async getAllStores(){
       await this.contract.methods
       .getAllStores()
       .call()
       .then(value => this.allStores = value)
-      if(popup)
-      this.isDeletingStore = !this.isDeletingStore
     }
   }
 }
@@ -293,5 +299,10 @@ input{
   height: 50px;
   margin: 30px;
 }
-
+.role-change-btn{
+  font-size: 2rem; 
+  margin:10px;
+  width: 100px;
+  height: 50px;
+}
 </style>
