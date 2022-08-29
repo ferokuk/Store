@@ -5,17 +5,17 @@
   <div v-for="(comment,index) in comments" :key="comment" class="comment-container">
     <div>
       <div>{{index + 1}}.</div>
-      <div style="font-weight: bold">{{comment.login}}: </div>
+      <div class="bold">{{comment.login}}: </div>
       <div>{{comment.content}}</div>
-      {{comment.rating}}<span style="color:goldenrod;background-color:#CCCCFF">&#9733;</span>
+      {{comment.rating}}<span class="rating">&#9733;</span>
       {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green"></i>
       {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red"></i>
-      <div><button @click="getData(comment.from,comment.login)" class="modal-btn" style="display:inline; margin-bottom: 10px">Answer</button></div>
+      <div><button @click="getData(comment.from,comment.login)" class="modal-btn">Answer</button></div>
       <div v-for="(answer,answIndex) in answers" :key="answer">
-        <div v-if="answer.to === comment.from" style="border: 1px solid;margin:20px;">
+        <div v-if="answer.to === comment.from" class="answers">
         <div>Answers:</div>
         {{answIndex+1}}.
-        <div style="font-weight: bold">{{answer.login}}:</div>
+        <div class="bold">{{answer.login}}:</div>
         <div>{{answer.content}}</div>
         {{answer.likes}}<i class="fa fa-thumbs-o-up" style="color:green"></i>
         {{answer.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red"></i>
@@ -25,11 +25,11 @@
         <div class="modal-content">
           <div><button @click="modalAnswer = false" class="modal-btn">close</button></div>
           <br>
-          <div style="background-color:#CCCCFF"> Answer to: {{answerToLogin}}</div> 
+          <div>To: <span class="bold">{{answerToLogin}}</span></div> 
           <br>
           <div><textarea v-model="content" @change="contentChangeHandler" placeholder="50 characters max" maxlength="50"></textarea></div>
           <br>
-          <div><button @click="sendAnswer" :disabled="!content" class="modal-btn" style="margin-left: 15.6rem">Send</button></div>
+          <div class="center"><button @click="sendAnswer" :disabled="!content || isProcessing" class="send-btn">Send</button></div>
         </div>
       </div>
     </div>
@@ -49,7 +49,8 @@ export default {
       modalAnswer: false,
       content: "",
       answerToAdr: null,
-      answerToLogin: null
+      answerToLogin: null,
+      isProcessing: false
     }
   },
   async mounted () {
@@ -84,6 +85,7 @@ export default {
       this.answerToLogin = login
     },
     async sendAnswer(){
+      this.isProcessing = true
       await this.web3.eth.personal.unlockAccount(this.account.adr,"")
       await this.contract.methods
       .answerOnComment(this.content,this.answerToAdr)
@@ -91,8 +93,9 @@ export default {
       .then()
       swal("","Answer sent!","success",{buttons: false, timer:800})
       this.getComments()
-      this.answerToAdr,this.answerToLogin,this.content
+      this.answerToAdr = this.answerToLogin = this.content = null
       this.modalAnswer = false
+      this.isProcessing = false
     },
     async becomeBuyer(){
       let answ
@@ -148,7 +151,7 @@ textarea{
   display:flex;
   justify-content: center;
   align-items: center;
-  background: rgba(0,0,0,0.5);
+  background: rgba(0,0,0,0.3);
   position: fixed;
   margin: auto;
   
@@ -164,10 +167,10 @@ textarea{
 .modal-btn{
   width:100px;
   height: 50px;
-  display: flex;
   justify-content: center;
   align-items: center;
- 
+  display:inline; 
+  margin-bottom: 10px
 }
 .buyer-request-btn{
   font-size: 1.6rem; 
@@ -188,5 +191,29 @@ input{
   background-color: #CCCCFF;
   font-size: 1.5rem;
   width:400px;
+}
+.rating{
+  color:goldenrod;
+  background-color:#CCCCFF;
+}
+.answers{
+  border: 1px solid;
+  margin:20px;
+}
+.bold{
+  font-weight: bold;
+}
+.send-btn{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  width: 140px;
+  height: 70px;
+  font-size: 2rem;
+}
+.center{
+  display: flex; 
+  justify-content:center;
+  align-items:center
 }
 </style>
