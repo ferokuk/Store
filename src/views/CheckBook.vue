@@ -71,17 +71,6 @@ export default{
   background-color: #CCCCFF;
   font-size:2rem;
 }
-button{
-  font-size:2rem;
-  width:140px;
-  height:70px;
-  margin-top:1rem;
-  background-color: #CCCCFF;
-}
-button:hover{
-  cursor:pointer;
-  background-color:#9999FF;
-}
 .store-content{
   margin:30px;
   font-size:2rem;

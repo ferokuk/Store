@@ -12,7 +12,7 @@
     </div>
   </div>
   <div v-else v-for="(product,index) in products" :key="product" class="comment-container" style="width: 500px">
-    <div>
+    <div class="product-container">
       <div>{{index + 1}}. </div>
       <div >Name: <span style="font-weight: bold">{{product.name}} </span></div>
       <div>Amount: {{product.amount}} </div>
@@ -115,6 +115,8 @@ import swal from 'sweetalert'
 .stores{
   background-color: #CCCCFF;
   font-size:2rem;
+  display: flex;
+  margin-left: 32.2rem;
 }
 .comment-container{
   border: 2px solid;
@@ -135,5 +137,8 @@ import swal from 'sweetalert'
 .change-view:hover{
   background-color: #9999FF;
   cursor: pointer;
+}
+.product-container{
+  margin-top: 20px;
 }
 </style>
