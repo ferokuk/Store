@@ -14,12 +14,12 @@
     <div v-else>
       <transition-group name="comments">
         <div v-for="(comment,index) in comments" :key="comment">
-          {{index + 1}}.
           <div class="comment-container">
+              {{index + 1}}.
               <strong>{{comment.login}}</strong>: <br>
               {{comment.content.length > 50? comment.content.slice(0,50)+"...":comment.content}} <br>
-              {{comment.rating}}<span style="color:goldenrod">&#9733;</span>
-              {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green"></i>   {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red"></i>
+              {{comment.rating}}<span style="color:goldenrod;background-color:#CCCCFF">&#9733;</span>
+              {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green;background-color:#CCCCFF"></i>   {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red;background-color:#CCCCFF"></i>
           </div>
         </div>
       </transition-group>
@@ -80,8 +80,12 @@ button:hover{
 }
 .comment-container{
   border: 2px solid;
-  margin: 10px;
+  margin: 20px;
   background-color: #cfcfff;
+  width:1000px;
+  max-width: 1000px;
+  display:inline-block;
+  vertical-align: top;
 }
 .list-item {
   display: inline-block;
