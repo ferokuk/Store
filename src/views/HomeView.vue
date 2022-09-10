@@ -3,7 +3,7 @@
     <form @submit.prevent class="loginForm">
       Sign in to get access to your account
       <br>
-      <input type="text" class="loginField" placeholder="Login" v-model="login" @input="loginChangeHandler">
+      <input type="text" class="loginField" placeholder="Address" v-model="address" @input="addressChangeHandler">
       <br>
       <input type="password" class="loginField" placeholder="Password" v-model="password" @input="passwordChangeHandler" autocomplete="off">
       <br>
@@ -28,7 +28,7 @@
   </div>
   <div v-else>
     <button @click="signOut" id="signOutBtn">Sign out</button>
-    <ProfileView></ProfileView>
+    <ProfileView :role="account.role"></ProfileView>
   </div>
 </template>
 <script>
@@ -45,31 +45,61 @@ export default {
   },
   data () {
     return {
-      login: null,
       web3: null,
       contract: null,
       address: null,
+      account: null,
       password: null,
-      status: null,
       isSignedIn: false,
       signInAsStore: false
     }
   },
   methods: {
-    loginChangeHandler (event) {
-      this.address = event.target.value
-    },
     passwordChangeHandler (event) {
       this.password = event.target.value
     },
-   addressChangeHandler (event) {
+    addressChangeHandler (event) {
       this.address = event.target.value
     },
-    parseUserData (_name,_status) {
-      this.name = _name
-      this.status = _status
-    },
-    signIn() {
+    async signIn() {
+      if(this.address === null || this.password === null){
+        alert("Please fill in all fields")
+        return
+      }
+      await this.web3.eth.personal.unlockAccount(this.address,"")
+
+      if(!this.signInAsStore)
+      {
+        try
+        {
+          await this.contract
+          .methods.login(this.address, this.password)
+          .send({from: this.address,gas: 3000000})
+          .then(value => this.account = value.events.Login.returnValues.user)
+        }
+        catch(error)
+        {
+          alert("Please, check your address and password!")
+          return
+        }
+        alert(`Welcome, ${this.account.login}!`)
+      }
+
+      else
+      {
+        try
+        {
+          await this.contract
+          .methods.loginInStore(this.address, this.password)
+          .send({from: this.address,gas: 3000000})
+          .then(value => this.account = value.events.LoginInStore.returnValues.store)
+        }
+        catch(error)
+        {
+          alert("Please, check your address and password!")
+          return
+        }
+      }
       this.isSignedIn = true
       localStorage.setItem("signedIn",this.isSignedIn)
     },
