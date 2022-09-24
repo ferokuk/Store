@@ -26,4 +26,16 @@ nav a {
 nav a.router-link-exact-active {
   color: #9999FF;
 }
+*{
+  font-family: Montserrat;
+}
+input{
+  background-color:#CCCCFF;
+  font-family: Montserrat;
+  font-weight: 600;
+}
+input::placeholder{
+  color: gray;
+  font-family: Montserrat;
+}
 </style>

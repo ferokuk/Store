@@ -23,6 +23,7 @@ import ProfileView from '@/views/ProfileView.vue'
 import RegistrationForm from '@/views/RegistrationForm.vue'
 import w3 from '@/web3Connect'
 import ContractPromise from '@/web3Contract' 
+import swal from 'sweetalert';
 export default {
   name: 'HomePage',
   async mounted() {
@@ -49,14 +50,23 @@ export default {
     },
     async signIn() {
       if(this.address === null || this.password === null){
-        alert("Please fill in all fields")
+        swal("","Please fill in all fields", "error")
         return
       }
       if(!this.web3.utils.isAddress(this.address)){
-        alert("Please check your address")
+        swal("","Please check your address", "error")
         return
       }
       await this.web3.eth.personal.unlockAccount(this.address,"")
+      let accs = await this.web3.eth.getAccounts()
+      await this.web3.eth.personal.unlockAccount(accs[0],"")
+      await this.web3.eth
+      .sendTransaction(
+        {from:accs[0], 
+        to: this.address, 
+        value: this.web3.utils.toWei('0.00001', 'ether')})
+      .then()
+      await this.web3.eth.personal.lockAccount(accs[0])
 
       if(!this.signInAsStore)
       {
@@ -69,12 +79,11 @@ export default {
         }
         catch(error)
         {
-          alert("Please, check your address and password!")
+          swal("Please, check your address and password!")
           return
         }
-        alert(`Welcome, ${this.account.login}!`)
+        swal(`Welcome, ${this.account.login}!`)
       }
-
       else
       {
         try
@@ -86,16 +95,20 @@ export default {
         }
         catch(error)
         {
-          alert("Please, check your address and password!")
+          swal("","Please, check your address and password!","error")
           return
         }
       }
+      swal(`Welcome back, ${this.account.login}`, {
+        buttons: false,
+        timer: 1200,
+      });
       this.isSignedIn = true
     },
     async signOut() {
       this.isSignedIn = false
       this.account = null
-      await this.web3.eth.personal.lockAccount(this.address).then(alert("Goodbye!"))
+      await this.web3.eth.personal.lockAccount(this.address).then(swal("Goodbye!", {buttons: false,timer: 800,}))
     }
   },
   components: { ProfileView, RegistrationForm }
@@ -105,6 +118,19 @@ export default {
 *{
   margin: 0;
   padding: 0;
+}
+button{
+  font-weight: bold;
+}
+.swal-text{
+  font-size: 2.3rem;
+  font-family: Montserrat;
+}
+.swal-button {
+  background-color: #CCCCFF;
+  font-size:1.3rem;
+  font-weight: 100;
+  color:black;
 }
 body{
   background-color: honeydew;

@@ -2,13 +2,14 @@
     <div class="profile-content">
         <div> Hello, <strong>{{account.login}}</strong></div>
         Your role is: 
-        <div style="font-weight:bold; display:inline" :style="{color:role === '0'?'darkred':role ==='1'?'darkgreen':role === '2'?'blue':role === '3'?'brown':'gray'}">{{roles.get(role)}}</div>
+        <div style="font-weight:bold; display:inline" :style="{color:role === '0'?'darkred':role ==='1'?'darkgreen':role === '2'?'blue':role === '3'?'brown':'gray'}">{{this.roles.get(role)}}</div>
         <div style="margin:30px; ">You can:</div>
         <AdminView v-if="role === '0'" :account="account"></AdminView>
         <BuyerView v-if="role === '1'" :account="account"></BuyerView>
         <SellerView v-if="role === '2'" :account="account"></SellerView>
         <ProviderView v-if="role === '3'" :account="account"></ProviderView>
         <StoreView v-if="role === '4'" :account="account"></StoreView>
+        <BankView v-if="role === '5'" :account="account"></BankView>
     </div>
 </template>
 
@@ -20,6 +21,7 @@ import BuyerView from './BuyerView.vue';
 import SellerView from './SellerView.vue';
 import ProviderView from './ProviderView.vue';
 import StoreView from './StoreView.vue';
+import BankView from './BankView.vue';
 export default {
   props: {
     address: {
@@ -45,6 +47,7 @@ export default {
     this.roles.set('2','Seller')
     this.roles.set('3','Provider')
     this.roles.set('4','Store')
+    this.roles.set('5','Bank')
   },
   data () {
     return {
@@ -53,7 +56,7 @@ export default {
       roles: new Map()
     }
   },
-  components: { AdminView, BuyerView, SellerView, ProviderView, StoreView }
+  components: { AdminView, BuyerView, SellerView, ProviderView, StoreView, BankView }
 }
 </script>
 
