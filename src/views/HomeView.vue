@@ -62,7 +62,7 @@ export default {
       password: null,
       isSignedIn: false,
       signInAsStore: false,
-      isProcessing: false
+      isProcessing: false,
     }
   },
   methods: {
