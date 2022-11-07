@@ -4,7 +4,7 @@
       Hello, <span style="font-weight: bold;">{{greetingMessage}}</span> 
     </div>
     Your role is: 
-    <div style="font-weight:bold; display:inline" :style="{color:account.role === '0'?'darkred':account.role ==='1'?'darkgreen':account.role === '2'?'blue':account.role === '3'?'brown':'gray'}">{{this.roles.get(account.role)}}</div>
+    <div style="font-weight:bold; display:inline" :style="{color:account.role === '0'?'darkred':account.role ==='1'?'darkgreen':account.role === '2'?'blue':account.role === '3'?'brown':'gray'}">{{roles.get(account.role)}}</div>
     <br>
     <AdminView v-if="account.role === '0'" :account="account"></AdminView>
     <BuyerView v-if="account.role === '1'" :account="account"></BuyerView>
@@ -35,14 +35,14 @@ export default {
     }
   },
   async mounted () {
-    this.contract = await ContractPromise
-    this.web3 = w3()
     this.roles.set('0','Admin')
     this.roles.set('1','Buyer')
     this.roles.set('2','Seller')
     this.roles.set('3','Provider')
     this.roles.set('4','Store')
     this.roles.set('5','Bank')
+    this.contract = await ContractPromise
+    this.web3 = w3()
   },
   data () {
     return {

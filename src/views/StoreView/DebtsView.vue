@@ -54,7 +54,7 @@ import ContractPromise from '@/web3Contract'
         }
         await this.contract.methods
         .payDebts()
-        .send({from: this.adr,value: this.web3.utils.toWei(this.money, 'ether')})
+        .send({from: this.adr, value: this.web3.utils.toWei(this.money, 'ether')})
         swal("","Your money has been sent!","success",{buttons:false,timer:1000})
         this.checkDebts()
         if(this.debt === 0) swal("","Congratulations,\n now your debt is zero!","success")

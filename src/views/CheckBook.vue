@@ -15,11 +15,11 @@
       <transition-group name="comments">
         <div v-for="(comment,index) in comments" :key="comment">
           <div class="comment-container">
-              {{index + 1}}.
-              <strong>{{comment.login}}</strong>: <br>
-              {{comment.content.length > 50? comment.content.slice(0,50)+"...":comment.content}} <br>
-              {{comment.rating}}<span style="color:goldenrod;background-color:#CCCCFF">&#9733;</span>
-              {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green;background-color:#CCCCFF"></i>   {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red;background-color:#CCCCFF"></i>
+            {{index + 1}}.
+            <strong>{{comment.login}}</strong>: <br>
+            {{comment.content.length > 50? comment.content.slice(0,50)+"...":comment.content}} <br>
+            {{comment.rating}}<span style="color:goldenrod;background-color:#CCCCFF">&#9733;</span>
+            {{comment.likes}}<i class="fa fa-thumbs-o-up" style="color:green;background-color:#CCCCFF"></i>   {{comment.dislikes}}<i class="fa fa-thumbs-o-down" style="color:red;background-color:#CCCCFF"></i>
           </div>
         </div>
       </transition-group>
