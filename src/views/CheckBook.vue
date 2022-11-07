@@ -95,10 +95,6 @@ button:hover{
   display:inline-block;
   vertical-align: top;
 }
-.list-item {
-  display: inline-block;
-  margin-right: 10px;
-}
 .comments-enter-active,
 .comments-leave-active {
   transition: all 0.3s;

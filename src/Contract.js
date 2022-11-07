@@ -477,45 +477,6 @@ const ABI = [
 		"type": "function"
 	},
 	{
-		"inputs": [
-			{
-				"internalType": "address",
-				"name": "",
-				"type": "address"
-			}
-		],
-		"name": "addressToStore",
-		"outputs": [
-			{
-				"internalType": "string",
-				"name": "name",
-				"type": "string"
-			},
-			{
-				"internalType": "address payable",
-				"name": "adr",
-				"type": "address"
-			},
-			{
-				"internalType": "string",
-				"name": "password",
-				"type": "string"
-			},
-			{
-				"internalType": "uint256",
-				"name": "rating",
-				"type": "uint256"
-			},
-			{
-				"internalType": "enum WsrStoreFull.Roles",
-				"name": "role",
-				"type": "uint8"
-			}
-		],
-		"stateMutability": "view",
-		"type": "function"
-	},
-	{
 		"inputs": [],
 		"name": "adminPersonalData",
 		"outputs": [
@@ -1148,6 +1109,19 @@ const ABI = [
 	{
 		"inputs": [
 			{
+				"internalType": "uint256",
+				"name": "_index",
+				"type": "uint256"
+			}
+		],
+		"name": "refuseChangeRole",
+		"outputs": [],
+		"stateMutability": "nonpayable",
+		"type": "function"
+	},
+	{
+		"inputs": [
+			{
 				"internalType": "string",
 				"name": "_login",
 				"type": "string"
@@ -1311,6 +1285,6 @@ const ABI = [
 	}
 ]
 
-const address = '0x1883E103e049dc59b1590d7a01acd79f0B58b23F'
+const address = '0xa8a8ceB4823f3347a1ad06D29DfF5e801D3Fba94'
 
 export {ABI,address}
