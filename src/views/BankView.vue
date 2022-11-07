@@ -4,7 +4,7 @@
     </div>
 </template>
 
-script>
+<script>
 import w3 from '@/web3Connect'
 import ContractPromise from '@/web3Contract' 
 export default { 
@@ -25,7 +25,7 @@ export default {
     }
   }
 }
-
+</script>
 <style scoped>
 
 </style>

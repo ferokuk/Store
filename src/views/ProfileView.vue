@@ -1,29 +1,28 @@
 <template>
-    <div class="profile-content">
-        <div > 
-          Hello, <span v-if="account.role === '1' || account.role === '2' || account.role === '3'" style="font-weight: bold;">{{account[3]}}</span> 
-          <span v-else style="font-weight: bold;"> {{account.login?account.login:account.name}}</span>
-        </div>
-        Your role is: 
-        <div style="font-weight:bold; display:inline" :style="{color:account.role === '0'?'darkred':account.role ==='1'?'darkgreen':account.role === '2'?'blue':account.role === '3'?'brown':'gray'}">{{this.roles.get(account.role)}}</div>
-        <br>
-        <AdminView v-if="account.role === '0'" :account="account"></AdminView>
-        <BuyerView v-if="account.role === '1'" :account="account"></BuyerView>
-        <SellerView v-if="account.role === '2'" :account="account"></SellerView>
-        <ProviderView v-if="account.role === '3'" :account="account"></ProviderView>
-        <StoreView v-if="account.role === '4'" :account="account"></StoreView>
-        <BankView v-if="account.role === '5'" :account="account"></BankView>
+  <div class="profile-content">
+    <div> 
+      Hello, <span style="font-weight: bold;">{{greetingMessage}}</span> 
     </div>
+    Your role is: 
+    <div style="font-weight:bold; display:inline" :style="{color:account.role === '0'?'darkred':account.role ==='1'?'darkgreen':account.role === '2'?'blue':account.role === '3'?'brown':'gray'}">{{this.roles.get(account.role)}}</div>
+    <br>
+    <AdminView v-if="account.role === '0'" :account="account"></AdminView>
+    <BuyerView v-if="account.role === '1'" :account="account"></BuyerView>
+    <SellerView v-if="account.role === '2'" :account="account"></SellerView>
+    <ProviderView v-if="account.role === '3'" :account="account"></ProviderView>
+    <StoreView v-if="account.role === '4'" :account="account"></StoreView>
+    <BankView v-if="account.role === '5'" :account="account"></BankView>
+  </div>
 </template>
 
 <script>
 import w3 from '@/web3Connect'
 import ContractPromise from '@/web3Contract' 
-import AdminView from './AdminView.vue';
-import BuyerView from './BuyerView.vue';
-import SellerView from './SellerView.vue';
+import AdminView from './AdminView/AdminView.vue';
+import BuyerView from './BuyerView/BuyerView.vue';
+import SellerView from './SellerView/SellerView.vue';
 import ProviderView from './ProviderView.vue';
-import StoreView from './StoreView.vue';
+import StoreView from './StoreView/StoreView.vue';
 import BankView from './BankView.vue';
 export default {
   props: {
@@ -50,6 +49,13 @@ export default {
       contract: null,
       web3: null,
       roles: new Map()
+    }
+  },
+  computed:{
+    greetingMessage(){
+      if (this.account.login) return this.account.login
+      else if(this.account.name) return this.account.name
+      else return this.account[3]
     }
   },
   components: { AdminView, BuyerView, SellerView, ProviderView, StoreView, BankView }

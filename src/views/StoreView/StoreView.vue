@@ -3,15 +3,8 @@
     Your rating is: {{rating}}
   </div>
   <div>Your balance is: {{balance/10**18}} ether</div>
-  <div>
-    Your debt is : {{debt}} ether
-    <div v-if="debt > 0">
-      <input type="number" min="0.01" :max="debt" step="0.01" v-model.number="money" @change="moneyChangeHandler"> 
-      <br>
-      <button @click="payDebts" class="debts">Pay debts</button>
-    </div>
-  </div>
-  <button class="debts" @click="showSellers = !showSellers">{{showSellers?"Buy products":"Show sellers"}}</button>
+  <DebtsView :adr="account.adr"></DebtsView>
+  <button class="change-view" @click="showSellers = !showSellers">{{showSellers?"Buy products":"Show sellers"}}</button>
   <div v-if="showSellers">
     <Sellers :staff="account.staff"></Sellers>
   </div>
@@ -20,7 +13,7 @@
     <br>
     <input type="number" v-model="amount" min="1" @change="amountChangeHandler" placeholder="Product's amount" class="buy-product">
     <br>
-    <button @click="buyProduct" class="debts" :disabled="amount === null || name === null || name === ''">Buy</button>
+    <button @click="buyProduct" class="change-view" :disabled="amount === null || name === null || name === ''">Buy</button>
   </div>
 </template>
 
@@ -29,13 +22,10 @@ import w3 from '@/web3Connect'
 import ContractPromise from '@/web3Contract'
 import Sellers from './Sellers.vue' 
 import swal from 'sweetalert'
+import DebtsView from './DebtsView.vue'
 export default {
   data() {
     return {
-      contract: null,
-      web3: null,
-      debt: null,
-      money: null,
       showSellers: null,
       amount: null,
       name: null,
@@ -46,7 +36,6 @@ export default {
   async mounted() {
     this.contract = await ContractPromise
     this.web3 = w3()
-    this.checkDebts()
     await this.getBalance()
     await this.updateStoreRating()
   },
@@ -57,9 +46,6 @@ export default {
     }
   },
   methods:{
-    moneyChangeHandler(event){
-      this.money = event.target.value
-    },
     nameChangeHandler(event){
       this.name = event.target.value
     },
@@ -70,9 +56,11 @@ export default {
       await this.web3.eth.personal.unlockAccount(this.account.adr,"")
       let rating = 0
       let length = this.account.comments.length
+      if (length === 0) return
       for(let i = 0; i < length; i++)
       {
-        rating += ((i + 1) * this.account.comments[i][5])/(this.account.comments[i][5] + this.account.comments[i][6])
+        if(this.account.comments[i][5] === "0" && this.account.comments[i][6] === "0") {continue}
+        rating += ((i + 1) * Number(this.account.comments[i][5]))/(Number(this.account.comments[i][5]) + Number(this.account.comments[i][6]))
       }
       rating *= 1000
       rating = Math.floor(rating/length)
@@ -86,27 +74,6 @@ export default {
     await this.web3.eth
     .getBalance(this.account.adr)
     .then(value => this.balance = value)
-    },
-    checkDebts(){
-      this.contract.methods
-      .debts(this.account.adr)
-      .call()
-      .then(value => this.debt = value)
-    },
-    async payDebts(){
-      await this.web3.eth.personal.unlockAccount(this.account.adr,"")
-      if(this.money > this.debt) this.money-= this.money - this.debt
-      this.getBalance()
-      if(this.money > this.balance){
-        swal("","Not enough money","warning",{buttons:false,timer:1000})
-        return
-      }
-      await this.contract.methods
-      .payDebts()
-      .send({from: this.account.adr,value: this.money})
-      swal("","Your money has been sent!","success",{buttons:false,timer:1000})
-      this.checkDebts()
-      if(this.debt === 0)swal("","Congratulations,\n now your debt is zero!","success")
     },
     async buyProduct(){
       await this.web3.eth.personal.unlockAccount(this.account.adr,"")
@@ -154,18 +121,18 @@ export default {
       this.getBalance()
     }
   },
-  components: { Sellers }
+  components: { Sellers, DebtsView }
 }
 </script>
 
 <style scoped>
-.debts{
+.change-view{
   width:120px;
   height: 60px;
   background-color: #CCCCFF;
   font-size: 1rem;
 }
-.debts:hover{
+.change-view:hover{
   cursor: pointer;
   background-color:#9999FF;
 }
