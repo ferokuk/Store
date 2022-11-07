@@ -1,4 +1,4 @@
-# World-Skills-Store
+# Store
 
 ## Project setup
 ```
