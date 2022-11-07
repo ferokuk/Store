@@ -1,9 +1,12 @@
 <template>
     <div class="profile-content">
-        <div> Hello, <strong>{{account.login}}</strong></div>
+        <div > 
+          Hello, <span v-if="role === '1' || role === '2'" style="font-weight: bold;">{{account.FIO}}</span> 
+          <span v-else style="font-weight: bold;"> {{account.login}}</span>
+        </div>
         Your role is: 
         <div style="font-weight:bold; display:inline" :style="{color:role === '0'?'darkred':role ==='1'?'darkgreen':role === '2'?'blue':role === '3'?'brown':'gray'}">{{this.roles.get(role)}}</div>
-        <div style="margin:30px; ">You can:</div>
+        <br>
         <AdminView v-if="role === '0'" :account="account"></AdminView>
         <BuyerView v-if="role === '1'" :account="account"></BuyerView>
         <SellerView v-if="role === '2'" :account="account"></SellerView>
