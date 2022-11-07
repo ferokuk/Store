@@ -21,9 +21,9 @@ import ContractPromise from '@/web3Contract'
 import AdminView from './AdminView/AdminView.vue';
 import BuyerView from './BuyerView/BuyerView.vue';
 import SellerView from './SellerView/SellerView.vue';
-import ProviderView from './ProviderView.vue';
+import ProviderView from './ProviderView/ProviderView.vue';
 import StoreView from './StoreView/StoreView.vue';
-import BankView from './BankView.vue';
+import BankView from './BankView/BankView.vue';
 export default {
   props: {
     address: {

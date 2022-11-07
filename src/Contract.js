@@ -1285,6 +1285,6 @@ const ABI = [
 	}
 ]
 
-const address = '0x16E7985adB7Ea891E4DAfe1806D802600c7b3792'
+const address = '0xA329F1075149dB7bC56e33bCa4b01b6D243C9a15'
 
 export {ABI,address}
