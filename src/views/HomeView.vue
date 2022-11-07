@@ -1,5 +1,5 @@
 <template>
-  <div v-if="isSignedIn===false">
+  <div v-if="isSignedIn === false">
     <form @submit.prevent class="loginForm">
       <strong>Sign in to get access to your {{signInAsStore?"store":"account"}}</strong>
       <br>
@@ -15,7 +15,7 @@
   </div>
   <div v-else>
     <button @click="signOut" id="signOutBtn">Sign out</button>
-    <ProfileView :account="account" :role="account.role"></ProfileView>
+    <ProfileView :account="account" ></ProfileView>
   </div>
 </template>
 <script>
@@ -26,12 +26,35 @@ import ContractPromise from '@/web3Contract'
 import swal from 'sweetalert'
 export default {
   name: 'HomePage',
-  async mounted() {
+  async mounted(){
     this.web3 = w3()
     this.contract = await ContractPromise
+    this.isSignedIn = localStorage.getItem("signIn")?localStorage.getItem("signIn"):false
+    this.account = JSON.parse( localStorage.getItem("account") )?JSON.parse( localStorage.getItem("account") ):null
+    if(this.account === null) return
+    //if user is not a store account
+    if(this.account[4] !== "4"){
+      this.account.login = this.account[0]
+      this.account.adr = this.account[1]
+      this.account.password = null
+      this.account.fio = this.account[3]
+      this.account.role = this.account[4]
+      this.account.store = this.account[5]
+      this.account.comments = this.account[6]
+      return
+    }
+    this.account.name = this.account[0]
+    this.account.adr = this.account[1]
+    this.account.password = null
+    this.account.rating = this.account[3]
+    this.account.role = this.account[4]
+    this.account.products = this.account[5]
+    this.account.staff = this.account[6]
+    this.account.comments = this.account[7]
+    this.account.answers = this.account[8]
   },
-  data () {
-    return {
+  data (){
+    return{
       web3: null,
       contract: null,
       address: null,
@@ -50,11 +73,13 @@ export default {
       this.address = event.target.value
     },
     async signIn() {
-      if(this.address === null || this.password === null){
+      if(this.address === null || this.password === null)
+      {
         swal("","Please fill in all fields", "error")
         return
       }
-      if(!this.web3.utils.isAddress(this.address)){
+      if(!this.web3.utils.isAddress(this.address))
+      {
         swal("","Please check your address", "error")
         return
       }
@@ -65,14 +90,14 @@ export default {
         try
         {
           await this.contract
-          .methods.login(this.address, this.password)
+          .methods
+          .login(this.address, this.password)
           .send({from: this.address,gas: 3000000})
           .then(value => this.account = value.events.Login.returnValues.user)
         }
         catch(error)
         {
           swal("Please, check your address and password!")
-          console.log(error)
           this.isProcessing = false
           return
         }
@@ -89,7 +114,6 @@ export default {
         catch(error)
         {
           swal("","Please, check your address and password!","error")
-          console.log(error)
           this.isProcessing = false
           return
         }
@@ -97,11 +121,17 @@ export default {
       swal(`Welcome back, ${this.account.login?this.account.login:this.account.name}`, {buttons: false,timer: 1200})
       this.isProcessing = false
       this.isSignedIn = true
+      localStorage.setItem("signIn",this.isSignedIn)
+      localStorage.setItem("account",JSON.stringify(this.account))
     },
-    async signOut() {
+    signOut() {
+      this.web3.eth.personal
+      .lockAccount(this.account.adr)
+      .then(swal("Goodbye!", {buttons: false,timer: 800}))
       this.isSignedIn = false
-      this.account = null
-      await this.web3.eth.personal.lockAccount(this.address).then(swal("Goodbye!", {buttons: false,timer: 800}))
+      this.account = {}
+      localStorage.removeItem("signIn")
+      localStorage.removeItem("account")
     }
   },
   components: { ProfileView, RegistrationForm }

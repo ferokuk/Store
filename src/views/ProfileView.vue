@@ -1,18 +1,18 @@
 <template>
     <div class="profile-content">
         <div > 
-          Hello, <span v-if="role === '1' || role === '2'" style="font-weight: bold;">{{account.FIO}}</span> 
-          <span v-else style="font-weight: bold;"> {{account.login}}</span>
+          Hello, <span v-if="account.role === '1' || account.role === '2'" style="font-weight: bold;">{{account.FIO}}</span> 
+          <span v-else style="font-weight: bold;"> {{account.login?account.login:account.name}}</span>
         </div>
         Your role is: 
-        <div style="font-weight:bold; display:inline" :style="{color:role === '0'?'darkred':role ==='1'?'darkgreen':role === '2'?'blue':role === '3'?'brown':'gray'}">{{this.roles.get(role)}}</div>
+        <div style="font-weight:bold; display:inline" :style="{color:account.role === '0'?'darkred':account.role ==='1'?'darkgreen':account.role === '2'?'blue':account.role === '3'?'brown':'gray'}">{{this.roles.get(account.role)}}</div>
         <br>
-        <AdminView v-if="role === '0'" :account="account"></AdminView>
-        <BuyerView v-if="role === '1'" :account="account"></BuyerView>
-        <SellerView v-if="role === '2'" :account="account"></SellerView>
-        <ProviderView v-if="role === '3'" :account="account"></ProviderView>
-        <StoreView v-if="role === '4'" :account="account"></StoreView>
-        <BankView v-if="role === '5'" :account="account"></BankView>
+        <AdminView v-if="account.role === '0'" :account="account"></AdminView>
+        <BuyerView v-if="account.role === '1'" :account="account"></BuyerView>
+        <SellerView v-if="account.role === '2'" :account="account"></SellerView>
+        <ProviderView v-if="account.role === '3'" :account="account"></ProviderView>
+        <StoreView v-if="account.role === '4'" :account="account"></StoreView>
+        <BankView v-if="account.role === '5'" :account="account"></BankView>
     </div>
 </template>
 
@@ -30,15 +30,8 @@ export default {
     address: {
       type: String,
     },
-    role: {
-      type: String
-    },
     account:{
       type: Object,
-      required: true
-    },
-    role:{
-      type: String,
       required: true
     }
   },

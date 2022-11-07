@@ -1,6 +1,6 @@
 <template>
     <div>Your balance: {{balance}} ether</div>
-    <button @click="changeView" class="change-view">{{isBuying?'Buy products':'See store comments'}}</button> <br>
+    <button @click="changeView" class="change-view">{{isBuying?'See store comments':'Buy products'}}</button> <br>
     <div>
       <select v-model="address" @change="addressChangeHandler" class="stores">
         <option v-for="store in allStores" :key="store">{{store}}</option>
@@ -109,12 +109,16 @@ export default {
     await this.web3.eth
     .getBalance(this.account.adr)
     .then(value => this.balance = this.web3.utils.fromWei(value))
+    this.address = localStorage.getItem("addressList")?localStorage.getItem("addressList"):null
+    if(this.address){
+      this.getComments()
+    }
   },
   methods:{
   async addressChangeHandler(event){
 
     this.address = event.target.value
-
+    localStorage.setItem("addressList",this.address)
     if(this.isBuying){
       this.contract.methods
       .showProducts(this.address)
@@ -171,7 +175,6 @@ export default {
     }
     catch(error)
     {
-      console.log(error)
       this.isProcessing = false
       return
     }
